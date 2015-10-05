@@ -14,7 +14,7 @@
 	  <li role="presentation"><a href="#">Amministrazione</a></li>
 	</ul>
 	
-	<form method="post" name="modulo" class="form-inline" role="form">
+	<form method="post" name="modulo" class="form-inline" role="form" action="sendOrder.php">
 	<table class="table table-condensed">
 		<thead>
 			<tr>
@@ -32,14 +32,14 @@
 						echo "<th>".$row[1]."</th>"; //Nome
 						echo "<th>".$row[2]."</th>"; //Descrizione
 						$taglie =  convertStringToArray($row[3]);
-						echo '<th> <select class="form-control" id="sel1" name="'.$row['id'].'-taglia">';
+						echo '<th> <select class="form-control" id="sel1" name="'."taglia".$row['id'].'">';
 						for($i=0; $i < count($taglie)-1; $i++){
 								echo "<option>".$taglie[$i]."</option>";
 						}
 						echo "</select></th>";//Taglia
 						echo "<th>".$row[4]."</th>"; //Prezzo
 						//echo "<th>".$row[4]."</th>";
-						echo '<th><select class="form-control" id="sel1" name="'.$row['id'].'-quantity" onchange="updateTotal()">';
+						echo '<th><select class="form-control" id="sel1" name="quantity'.$row['id'].'" onchange="updateTotal()">';
 						for($i=0; $i < 9; $i++){
 								echo "<option>".$i."</option>";
 						}
@@ -48,8 +48,40 @@
 			?>
 		</thead>
 	</table>
-	
-	<input type="button" value="Invia" onClick="Modulo()">
+	<div class="row" >
+		<div class="col-sm-4">
+		  <label for="ex3">Nome</label>
+		  <input class="form-control" id="ex3" type="text" placeholder="Nome del Ragazzo">
+		</div>
+		<div class="col-sm-4">
+		  <label for="ex3">eMail</label>
+		  <input class="form-control" id="ex3" type="text">
+		</div>
+		<div class="col-sm-4">
+		  <label for="ex3">Telefono</label>
+		  <input class="form-control" id="ex3" type="text">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4"> 
+			<label for="sel1">Branca</label>
+			<select class="form-control" id="sel1">
+			  <option>Cerchio</option>
+			  <option>Reparto</option>
+			  <option>Clan</option>
+			</select>
+		</div>
+		<div class="col-sm-4"> 
+			<label for="sel1">Metodo Pagamento</label>
+			<select class="form-control" id="sel1">
+			  <option>Bonifico</option>
+			  <option>Contanti</option>
+			</select>
+		</div>
+		<div class="col-sm-4"> 
+		<input type="submit" value="Invia">
+		</div>
+	</div>
 </form>
 <div id="total"></div>
 </div>
@@ -62,10 +94,10 @@ function updateTotal() {
 	<?php
 		$items = $db -> getItem();
 		while($row = $items -> fetchArray()){
-			echo "if(document.modulo.".$row['id']."-quantity.value != 0){".PHP_EOL;
-			echo "	total +=".$row["prezzo"]."* document.modulo.".$row["id"]."-quantity.value;}".PHP_EOL;
+			echo "if(document.modulo.quantity".$row['id'].".value != 0){".PHP_EOL;
+			echo "	total +=".$row["prezzo"]."* document.modulo.quantity".$row["id"].".value;}".PHP_EOL;
 		}
 	?>
-	document.getElementById("content").innerHTML = total;
+	document.getElementById("total").innerHTML = total;
 }
 </script>
