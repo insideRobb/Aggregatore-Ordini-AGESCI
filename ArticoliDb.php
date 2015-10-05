@@ -2,7 +2,7 @@
 	class ArticoliDb extends SQLite3{
 		function __construct(){
 			$this -> open("database", SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
-			$this -> exec("CREATE TABLE IF NOT EXISTS articoli (nome TEXT, prezzo REAL, descrizione TEXT, taglie TEXT)");
+			$this -> exec("CREATE TABLE IF NOT EXISTS articoli (id INTEGER PRIMARY KEY, nome TEXT, descrizione REAL, taglie TEXT, prezzo INT)");
 			$this -> exec("CREATE TABLE IF NOT EXISTS ordini (id INTEGER PRIMARY KEY, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, oggetti TEXT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)");
 		}
 		
@@ -46,11 +46,11 @@
 		
 		function addItem($nome, $prezzo, $descrizione, $taglie){
 			$taglie_str = convertArrayToString($taglie);
-			$this -> exec("INSERT INTO articoli VALUES ('$nome', $prezzo, '$descrizione', '$taglie_str')");
+			$this -> exec("INSERT INTO articoli (nome, prezzo, descrizione, taglie) VALUES ('$nome', $prezzo, '$descrizione', '$taglie_str')");
 		}
 		
-		function removeItem($nome, $prezzo){
-			$this -> exec("DELETE * FROM articolo WHERE nome='$nome'");
+		function removeItem($id){
+			$this -> exec("DELETE * FROM articolo WHERE id='$id'");
 		}
 		
 		function getOrderUser($email){

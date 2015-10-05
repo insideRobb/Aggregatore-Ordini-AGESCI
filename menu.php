@@ -2,16 +2,16 @@
   function convertArrayToString($array){
     $strSeparator = "__,__";
     $str = "";
-    foreach ($array as $oggetto) {
-      $str = $str.$oggetto.$strSeparator;	
+    for($i=0; $i<count($array); $i++) {
+      $str = $str.$array[$i].$strSeparator;	
     }
-    return str;
+    return $str;
   }
   
-  function convertStringToArray($str){
+  function convertStringToArray($string){
     $strSeparator = "__,__";
-    $arr = explode($strSeparator, $str);
-    return $arr;
+    $array = explode($strSeparator, $string);
+    return $array;
   }
 ?>
 <!DOCTYPE html>
