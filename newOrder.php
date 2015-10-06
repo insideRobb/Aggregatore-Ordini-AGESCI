@@ -15,7 +15,12 @@
 	</ul>-->
 
 	  <h2>Ordina i tuoi prodotti</h2>
-	  <p>Dati Utente</p>            
+	  <form class="form-inline"> 
+		  <label for="nome" class="col-lg-2 control-label">Dati Ordine</label>
+				<input type="text" class="form-control" id="nome" placeholder="Nome">
+				<input type="text" class="form-control" id="email" placeholder="eMail">
+				<input type="text" class="form-control" id="telefono" placeholder="Telefono">
+	  </form>        
 	  <table class="table">
 		<thead>
 		  <tr>
@@ -31,7 +36,7 @@
 		</tbody>
 	  </table>
 			
-		
+	
 	<div id="total"></div>
 </div>
 </body>
@@ -48,8 +53,11 @@
 	echo "var db=".json_encode($rows).";";
 ?>
 var row_count = 0;
+var total = 0;
 function print_row(){
 	var row = $("<tr></tr>");
+	row.attr("id", "n"+row_count);
+	row_count++;
 	var tdnome = $("<td></td>");
 	select_nome = $("<select></select>");
 	select_nome.addClass("form-control");
@@ -67,21 +75,17 @@ function print_row(){
 }
 
 function item_selected(item){
-	//Assegno id univoco alla riga
-	$("tr").attr("id", row_count);
-	row_count++;	
-	
 	//Cerco elemento nel JSON_db
-	for(var elemento in db){
-		if(db[elemento].nome == item.nome)
-			break;
-	}
+	elemento = item.value;
+	
+	var row_id = item.parentNode.parentNode.id;
 	//Mostro la descrizione
-	var descrizione = $("#td_descr");
-	descrizione.text(db[elemento].descrizione);
+	var descrizione = $("#"+row_id).find("#td_descr");
+	descrizione.attr("id", row_id);
+	descrizione.html(db[elemento].descrizione);
 	
 	//Mostro le taglie
-	var td_taglie = $("#td_taglie");
+	var td_taglie = $("#"+row_id).find("#td_taglie");
 	var select_taglie = $("<select></select>");
 	select_taglie.addClass("form-control");
 	var taglie = db[elemento].taglie;
@@ -93,10 +97,10 @@ function item_selected(item){
 	td_taglie.html(select_taglie);
 	
 	//Mostro il prezzo
-	$("#td_prezzo").text(db[elemento].prezzo);
+	$("#"+row_id).find("#td_prezzo").text(db[item.value].prezzo);
 	
 	//Costruisco la lista di scelta quantita'
-	var quantity = $("#td_quantity");
+	var quantity = $("#"+row_id).find("#td_quantity");
 	var select_quantity = $("<select></select>");
 	select_quantity.addClass("form-control");
 	select_quantity.attr("onchange", "showTotal(item)");
@@ -105,14 +109,30 @@ function item_selected(item){
 		option.append(i);
 		select_quantity.append(option);
 	}
-	quantity.append(select_quantity);
+	quantity.html(select_quantity);
 	
-	//Mostro primo totale
-	$("#td_button").html('<button type="button" class="btn btn-success" onclick="updateTotal(this)">Aggiungi</button>');
+	//Mostro pulsante 
+	$("#"+row_id).find("#td_button").html('<button type="button" class="btn btn-success" onclick="addItem(this)">Aggiungi</button>');
 	
 }
-function updateTotal() {
-	var total = 0;
+
+function addItem(btnClicked) {
 	print_row();
+	var row_id = btnClicked.parentNode.parentNode.id;
+	var button = $("#"+row_id).find("#td_button");
+	button.html('<button type="button" class="btn btn-danger" onclick="removeItem(this)">Rimuovi</button>');
+	total += parseFloat($("#"+row_id).find("#td_prezzo").text());
+	$("#total").html(total);
+}
+
+function removeItem(btnClicked){
+	var row_id = btnClicked.parentNode.parentNode.id;
+	total -= parseFloat($("#"+row_id).find("#td_prezzo").text());
+	$("#total").html(total);
+	$("#"+row_id).remove();
+}
+
+function createOrder(){
+	
 }
 </script>
