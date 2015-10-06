@@ -3,7 +3,10 @@
     $strSeparator = "__,__";
     $str = "";
     for($i=0; $i<count($array); $i++) {
-      $str = $str.$array[$i].$strSeparator;	
+      if($i == count($array)-1)
+        $str = $str.$array[$i];	
+      else
+        $str = $str.$array[$i].$strSeparator;
     }
     return $str;
   }
@@ -23,4 +26,6 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="bootstrap-select/js/bootstrap-select.js"></script>
+  <link rel="stylesheet" href="bootstrap-select/css/bootstrap-select.css">
 </head>

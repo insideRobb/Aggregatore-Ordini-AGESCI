@@ -2,91 +2,117 @@
 	require("menu.php");
 	$db = new ArticoliDb();
 	//$db -> addItem("camicia", 24.5, "descrizione camicia", ["S", "M", "L"]);
-	//$db -> addItem("pantaloni", 27.5, "pantaloni camicia", ["XS", "M", "XL"]);
+	//$db -> addItem("pantaloni", 27.5, "decrizione Pantaloni", ["XS", "M", "XL"]);
 ?>
-<body>
-<div class="container">
+<body onload="print_row()">
+<div class="container form-group">
 	
-	<ul class="nav nav-pills">
+	<!--<ul class="nav nav-pills">
 	  <li role="presentation"><a href="index.php">Home</a></li>
 	  <li role="presentation" class="active"><a href="#">Nuovo Ordine</a></li>
 	  <li role="presentation"><a href="#">Stato Ordine</a></li>
 	  <li role="presentation"><a href="#">Amministrazione</a></li>
-	</ul>
-	
-	<form method="post" name="modulo" class="form-inline" role="form" action="sendOrder.php">
-	<table class="table table-condensed">
+	</ul>-->
+
+	  <h2>Ordina i tuoi prodotti</h2>
+	  <p>Dati Utente</p>            
+	  <table class="table">
 		<thead>
-			<tr>
-				<th data-field="nome">Oggetto</th>
-				<th data-field="descrizione">Descrizione</th>
-				<th data-field="taglie">Taglia</th>
-				<th data-field="prezzo">Prezzo Unitario</th>
-				<th data-field="quantity">Quantità</th>
-				<th data-field="add"></th>
-			</tr>
-			<tr>
-				<div id="row"></div>
-			</tr>
+		  <tr>
+			<th>Articolo</th>
+			<th>Descrizione</th>
+			<th>Taglie Disponibili</th>
+			<th>Prezzo</th>
+			<th>Quantità</th>
+			<th></th>
+		  </tr>
 		</thead>
-	</table>
-	<div class="row" >
-		<div class="col-sm-4">
-		  <label for="ex3">Nome</label>
-		  <input class="form-control" id="ex3" type="text" placeholder="Nome del Ragazzo">
-		</div>
-		<div class="col-sm-4">
-		  <label for="ex3">eMail</label>
-		  <input class="form-control" id="ex3" type="text">
-		</div>
-		<div class="col-sm-4">
-		  <label for="ex3">Telefono</label>
-		  <input class="form-control" id="ex3" type="text">
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-4"> 
-			<label for="sel1">Branca</label>
-			<select class="form-control" id="sel1">
-			  <option>Cerchio</option>
-			  <option>Reparto</option>
-			  <option>Clan</option>
-			</select>
-		</div>
-		<div class="col-sm-4"> 
-			<label for="sel1">Metodo Pagamento</label>
-			<select class="form-control" id="sel1">
-			  <option>Bonifico</option>
-			  <option>Contanti</option>
-			</select>
-		</div>
-		<div class="col-sm-4"> 
-		<input type="submit" value="Invia">
-		</div>
-	</div>
-</form>
-<div id="total"></div>
+		<tbody>
+		</tbody>
+	  </table>
+			
+		
+	<div id="total"></div>
 </div>
 </body>
 </html>
 
 <script>
-	
+<?php
+	$item = $db -> getItem();
+	$rows = array();
+	while($row = $item -> fetchArray()){
+		$row["taglie"] = convertStringToArray($row["taglie"]);
+		$rows[$row["nome"]]=$row;
+	}
+	echo "var db=".json_encode($rows).";";
+?>
+var row_count = 0;
 function print_row(){
-	<?php
-		$item = $db -> getItem();
+	var row = $("<tr></tr>");
+	var tdnome = $("<td></td>");
+	select_nome = $("<select></select>");
+	select_nome.addClass("form-control");
+	select_nome.attr("onchange", "item_selected(this)");
+	select_nome.append($("<option disabled selected></option>").text("Scegli un articolo"));
+	for(var i in db){
+		var option = $("<option></option>");
+		option.append(db[i].nome);
+		select_nome.append(option);
+	}
+	tdnome.append(select_nome);
+	row.append(tdnome);
+	row.append('<td id="td_descr"></td><td id="td_taglie"></td><td id="td_prezzo"></td><td id="td_quantity"></td><td id="td_button"></td>');
+	$("tbody").append(row);
+}
+
+function item_selected(item){
+	//Assegno id univoco alla riga
+	$("tr").attr("id", row_count);
+	row_count++;	
 	
-	?>
+	//Cerco elemento nel JSON_db
+	for(var elemento in db){
+		if(db[elemento].nome == item.nome)
+			break;
+	}
+	//Mostro la descrizione
+	var descrizione = $("#td_descr");
+	descrizione.text(db[elemento].descrizione);
+	
+	//Mostro le taglie
+	var td_taglie = $("#td_taglie");
+	var select_taglie = $("<select></select>");
+	select_taglie.addClass("form-control");
+	var taglie = db[elemento].taglie;
+	taglie.forEach(function(x){
+		var option = $("<option></option>");
+		option.append(x);
+		select_taglie.append(option);
+	});
+	td_taglie.html(select_taglie);
+	
+	//Mostro il prezzo
+	$("#td_prezzo").text(db[elemento].prezzo);
+	
+	//Costruisco la lista di scelta quantita'
+	var quantity = $("#td_quantity");
+	var select_quantity = $("<select></select>");
+	select_quantity.addClass("form-control");
+	select_quantity.attr("onchange", "showTotal(item)");
+	for(var i = 1; i<10; i++){
+		var option = $("<option></option>");
+		option.append(i);
+		select_quantity.append(option);
+	}
+	quantity.append(select_quantity);
+	
+	//Mostro primo totale
+	$("#td_button").html('<button type="button" class="btn btn-success" onclick="updateTotal(this)">Aggiungi</button>');
+	
 }
 function updateTotal() {
 	var total = 0;
-	<?php
-		$items = $db -> getItem();
-		while($row = $items -> fetchArray()){
-			echo "if(document.modulo.quantity".$row['id'].".value != 0){".PHP_EOL;
-			echo "	total +=".$row["prezzo"]."* document.modulo.quantity".$row["id"].".value;}".PHP_EOL;
-		}
-	?>
-	document.getElementById("total").innerHTML = total;
+	print_row();
 }
 </script>
