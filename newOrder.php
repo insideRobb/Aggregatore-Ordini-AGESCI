@@ -23,29 +23,11 @@
 				<th data-field="taglie">Taglia</th>
 				<th data-field="prezzo">Prezzo Unitario</th>
 				<th data-field="quantity">Quantità</th>
+				<th data-field="add"></th>
 			</tr>
-			<?
-				$result = $db -> getItem();
-				while($row = $result -> fetchArray()){
-					
-					echo "<tr>";
-						echo "<th>".$row[1]."</th>"; //Nome
-						echo "<th>".$row[2]."</th>"; //Descrizione
-						$taglie =  convertStringToArray($row[3]);
-						echo '<th> <select class="form-control" id="sel1" name="'."taglia".$row['id'].'">';
-						for($i=0; $i < count($taglie)-1; $i++){
-								echo "<option>".$taglie[$i]."</option>";
-						}
-						echo "</select></th>";//Taglia
-						echo "<th>".$row[4]."</th>"; //Prezzo
-						//echo "<th>".$row[4]."</th>";
-						echo '<th><select class="form-control" id="sel1" name="quantity'.$row['id'].'" onchange="updateTotal()">';
-						for($i=0; $i < 9; $i++){
-								echo "<option>".$i."</option>";
-						}
-					echo "</tr>";
-				}	
-			?>
+			<tr>
+				<div id="row"></div>
+			</tr>
 		</thead>
 	</table>
 	<div class="row" >
@@ -89,6 +71,13 @@
 </html>
 
 <script>
+	
+function print_row(){
+	<?php
+		$item = $db -> getItem();
+	
+	?>
+}
 function updateTotal() {
 	var total = 0;
 	<?php
