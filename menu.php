@@ -28,4 +28,3 @@
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="bootstrap-select/js/bootstrap-select.js"></script>
   <link rel="stylesheet" href="bootstrap-select/css/bootstrap-select.css">
-</head>

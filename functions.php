@@ -1,9 +1,3 @@
-<?php
-	require("menu.php");
-	$db = new ArticoliDb();
-	//$db -> addItem("camicia", 24.5, "descrizione camicia", ["S", "M", "L"]);
-	//$db -> addItem("pantaloni", 27.5, "decrizione Pantaloni", ["XS", "M", "XL"]);
-?>
 <script>
 <?php
 	$item = $db -> getItem();
@@ -16,12 +10,12 @@
 ?>
 var row_count = 0;
 var total = 0;
+
 function print_row(){
 	var row = $("<tr></tr>");
 	row.attr("id", "n"+row_count);
 	row_count++;
 	var tdnome = $("<td></td>");
-	tdnome.attr("id", "td_nome");
 	select_nome = $("<select></select>");
 	select_nome.addClass("form-control");
 	select_nome.attr("onchange", "item_selected(this)");
@@ -44,6 +38,7 @@ function item_selected(item){
 	var row_id = item.parentNode.parentNode.id;
 	//Mostro la descrizione
 	var descrizione = $("#"+row_id).find("#td_descr");
+	descrizione.attr("id", row_id);
 	descrizione.html(db[elemento].descrizione);
 
 	//Mostro le taglie
@@ -82,9 +77,6 @@ function addItem(btnClicked) {
 	print_row();
 	var row_id = btnClicked.parentNode.parentNode.id;
 	var button = $("#"+row_id).find("#td_button");
-	$("#"+row_id).find("select").attr("disabled", "disabled");
-	$("#"+row_id).find("#td_taglia").attr("disabled", "disabled");
-	$("#"+row_id).find("#td_quantity").attr("disabled", "disabled");
 	button.html('<button type="button" class="btn btn-danger" onclick="removeItem(this)">Rimuovi</button>');
 	total += parseFloat($("#"+row_id).find("#td_prezzo").text());
 	$("#total").html(total);
@@ -100,70 +92,9 @@ function removeItem(btnClicked){
 function createOrder(){
 
 }
+
+/*function showIban(item){
+	var metodo = item.value;
+	if(metodo )
+}*/
 </script>
-</head>
-<body onload="print_row()">
-<div class="container form-group">
-	
-	<!--<ul class="nav nav-pills">
-	  <li role="presentation"><a href="index.php">Home</a></li>
-	  <li role="presentation" class="active"><a href="#">Nuovo Ordine</a></li>
-	  <li role="presentation"><a href="#">Stato Ordine</a></li>
-	  <li role="presentation"><a href="#">Amministrazione</a></li>
-	</ul>-->
-
-	  <h2>Ordina i tuoi prodotti</h2>       
-	  <table class="table">
-		<thead>
-		  <tr>
-			<th>Articolo</th>
-			<th>Descrizione</th>
-			<th>Taglie Disponibili</th>
-			<th>Prezzo</th>
-			<th>Quantità</th>
-			<th></th>
-		  </tr>
-		</thead>
-		<tbody>
-		</tbody>
-	  </table>
-			
-	
-	<div id="total"></div>
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" onclick="createOrder()">Concludi Ordine</button>
-</div>
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-	<!-- Modal content-->
-	<div class="modal-content">
-	  <div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h4 class="modal-title">Modal Header</h4>
-	  </div>
-	  <div class="modal-body">
-		<form role="form">
-		  <div class="form-group">
-			<label for="email">Email address:</label>
-			<input type="email" class="form-control" id="email">
-		  </div>
-		  <div class="form-group">
-			<label for="pwd">Password:</label>
-			<input type="password" class="form-control" id="pwd">
-		  </div>
-		  <div class="checkbox">
-			<label><input type="checkbox"> Remember me</label>
-		  </div>
-		  <button type="submit" class="btn btn-default">Submit</button>
-		</form>
-	  </div>
-	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	  </div>
-	</div>
-
-  </div>
-</div>
-</body>
-</html>
