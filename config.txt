@@ -1,0 +1,4 @@
+Va impostata la home root nel file htaccess per fare in modo che admin sia correttamente protetta.
+Settare poi la password dentro htpasswd dentro la dir admin.
+
+Impostare correttamente mail_config.php

@@ -1,8 +1,6 @@
 <?php
 	require("menu.php");
-	$db = new ArticoliDb();
-	//$db -> addItem("camicia", 24.5, "descrizione camicia", ["S", "M", "L"]);
-	//$db -> addItem("pantaloni", 27.5, "decrizione Pantaloni", ["XS", "M", "XL"]);
+	$db = new ArticoliDb(".");
 ?>
 <script>
 <?php
@@ -16,6 +14,8 @@
 ?>
 var row_count = 0;
 var total = 0;
+var order_items = [];
+
 function print_row(){
 	var row = $("<tr></tr>");
 	row.attr("id", "n"+row_count);
@@ -44,7 +44,7 @@ function item_selected(item){
 	var row_id = item.parentNode.parentNode.id;
 	//Mostro la descrizione
 	var descrizione = $("#"+row_id).find("#td_descr");
-	descrizione.html(db[elemento].descrizione);
+	descrizione.html(db[elemento].descrizione.replace("%27", "'"));
 
 	//Mostro le taglie
 	var td_taglie = $("#"+row_id).find("#td_taglie");
@@ -59,13 +59,14 @@ function item_selected(item){
 	td_taglie.html(select_taglie);
 
 	//Mostro il prezzo
-	$("#"+row_id).find("#td_prezzo").text(db[item.value].prezzo);
+	var prezzo = db[item.value].prezzo
+	$("#"+row_id).find("#td_prezzo").text(prezzo);
 
 	//Costruisco la lista di scelta quantita'
 	var quantity = $("#"+row_id).find("#td_quantity");
 	var select_quantity = $("<select></select>");
 	select_quantity.addClass("form-control");
-	select_quantity.attr("onchange", "showTotal(item)");
+	//select_quantity.attr("onchange", "showTotal(item)");
 	for(var i = 1; i<10; i++){
 		var option = $("<option></option>");
 		option.append(i);
@@ -86,19 +87,41 @@ function addItem(btnClicked) {
 	$("#"+row_id).find("#td_taglia").attr("disabled", "disabled");
 	$("#"+row_id).find("#td_quantity").attr("disabled", "disabled");
 	button.html('<button type="button" class="btn btn-danger" onclick="removeItem(this)">Rimuovi</button>');
-	total += parseFloat($("#"+row_id).find("#td_prezzo").text());
-	$("#total").html(total);
+	total += parseFloat($("#"+row_id).find("#td_prezzo").text())*parseFloat($("#"+row_id).find("#td_quantity option:selected").text());
+	$("#total").html("<h6> Totale: "+total.toFixed(2)+"€</h6>");
+	
+	//Aggiungo elemento a JSON Obj
+	var item = new Object();
+	item.row_id = row_id;
+	item.item = $("#"+row_id).find("#td_nome option:selected").text();
+	item.taglia = $("#"+row_id).find("#td_taglie option:selected").text();
+	item.quantity = parseFloat($("#"+row_id).find("#td_quantity option:selected").text());
+	order_items.push(item);
+	//console.dir(order_items);
+}
+
+//Remove element from JSON obj
+function findAndRemove(array, property, value) {
+	var i = 0;
+	for(i = 0; i<array.length; i++){
+		if (array[i][property] == value)
+			array.splice(i, 1);
+	}
 }
 
 function removeItem(btnClicked){
 	var row_id = btnClicked.parentNode.parentNode.id;
-	total -= parseFloat($("#"+row_id).find("#td_prezzo").text());
-	$("#total").html(total);
+	total -= parseFloat($("#"+row_id).find("#td_prezzo").text()) * parseFloat($("#"+row_id).find("#td_quantity option:selected").text());
+	$("#total").html("<h6> Totale: €"+total.toFixed(2)+"</h6>");;
 	$("#"+row_id).remove();
+	//console.dir(row_id);
+	findAndRemove(order_items, "row_id", row_id);
+	//console.dir(order_items);
 }
 
-function createOrder(){
-
+function prepareDataForm(){
+	$("#items").attr("value", encodeURIComponent(JSON.stringify(order_items)));
+	$("#totaleOrdine").attr("value", total.toString());
 }
 </script>
 </head>
@@ -119,7 +142,7 @@ function createOrder(){
 			<th>Articolo</th>
 			<th>Descrizione</th>
 			<th>Taglie Disponibili</th>
-			<th>Prezzo</th>
+			<th>Prezzo (€, caduno)</th>
 			<th>Quantità</th>
 			<th></th>
 		  </tr>
@@ -130,7 +153,7 @@ function createOrder(){
 			
 	
 	<div id="total"></div>
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" onclick="createOrder()">Concludi Ordine</button>
+	<button id="insertData" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" onclick="prepareDataForm()">Concludi Ordine</button>
 </div>
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
@@ -140,26 +163,41 @@ function createOrder(){
 	<div class="modal-content">
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h4 class="modal-title">Modal Header</h4>
+		<h4 class="modal-title">Inserisci i dati per concludere l'ordine</h4>
 	  </div>
 	  <div class="modal-body">
-		<form role="form">
+		<form role="form" action="saveOrder.php" method="POST">
 		  <div class="form-group">
-			<label for="email">Email address:</label>
-			<input type="email" class="form-control" id="email">
+			<label for="nome">Nome e Cognome:</label>
+			<input type="text" class="form-control" id="nome" name="name">
 		  </div>
 		  <div class="form-group">
-			<label for="pwd">Password:</label>
-			<input type="password" class="form-control" id="pwd">
+			<label for="email">eMail:</label>
+			<input type="email" class="form-control" id="email" name="mail">
 		  </div>
-		  <div class="checkbox">
-			<label><input type="checkbox"> Remember me</label>
+		  <div class="form-group">
+		  	<label for="phone">Telefono:</label>
+		  	<input type="phone" class="form-control" id="phone" name="phone">
 		  </div>
-		  <button type="submit" class="btn btn-default">Submit</button>
+		  <div class="form-group">
+		   	<label for="pagamento">Modalità di Pagamento :</label>
+		   	<label class="radio-inline"><input type="radio" name="pagamento" value="A mano">A mano a riunione</label>
+		   	<label class="radio-inline"><input type="radio" name="pagamento" value="Bonifico">Bonifico Bancario</label>
+		  </div>
+		  <div class="form-group">
+		    	<label for="branca">Branca:</label>
+		    	<label class="radio-inline"><input type="radio" name="branca" value="LC">LC (Coccinelle)</label>
+		    	<label class="radio-inline"><input type="radio" name="branca" value="EG">EG (Reparto)</label>
+		    	<label class="radio-inline"><input type="radio" name="branca" value="RS">RS (Clan)</label>
+		   </div>
+		<input type="hidden" name="items" id="items" value="">
+		<input type="hidden" name="totale" id="totaleOrdine" value="">
+
+		  <button id="saveOrder" type="submit" class="btn btn-success">Invia</button>
 		</form>
 	  </div>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
 	  </div>
 	</div>
 
