@@ -1,7 +1,8 @@
 <?php
 	require("menu.php");
-	require("PHPMailer/PHPMailerAutoload.php");
 	require("mail_config.php");
+	if($useSMTP)
+		require("PHPMailer/PHPMailerAutoload.php");
 	$db = new ArticoliDb(".");
 	
 
@@ -20,21 +21,21 @@
 	//var_dump($items);
 	
 	$idOrdine = $db -> addOrder($name, $mail, $phone, $items, $totale, $pagamento, $branca);
-	$mailBody.="VA CORRETTA FORMATTAZIONE!!";
-	$mailBody.= "Il tuo ordine è andato a buon fine<br/>.".PHP_EOL;
-	$mailBody.= "Il totale dell'ordine (da saldare in anticipo) è di €".$totale.PHP_EOL;
-	$mailBody.= PHP_EOL."Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'.PHP_EOL.PHP_EOL;
+	$mailBody = "<html><body>Il tuo ordine e' andato a buon fine<br/>";
+	$mailBody.= "Il totale dell'ordine (da saldare in anticipo) e' di euro ".$totale;
+	$mailBody.= PHP_EOL."<br/>Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'."<br/><br/>".PHP_EOL.PHP_EOL;
 	if($pagamento == "A mano")
-		$mailBody.= "Per saldare l'ordine stampa la ricevuta e consegnala, insieme al totale da saldare, ad un capo alla prossima riunione";
+		$mailBody.= "Per confermare l'ordine e' necessario il pagamento. Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non si riesce a stampare la pagina, bastera' il numero dell'ordine e l'importo).";
 	else
-		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN ".$iban;
+		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN: ".$iban;
+	$mailBody .= "<br/> L'ordine sarà valido solo dopo il pagamento</body></html>";
 	if($useSMTP){
 		$sendmail = new PHPMailer();  // create a new object
 		$sendmail->IsSMTP(); // enable SMTP
-		$sendmail->SMTPDebug = 1;  // debugging: 1 = errors and messages, 2 = messages only
+		$sendmail->SMTPDebug = 0;  // debugging: 1 = errors and messages, 2 = messages only
 		$sendmail->Mailer = "smtp";
 		$sendmail->SMTPAuth = true;  // authentication enabled
-		$sendmail->SMTPSecure = ''; // secure transfer enabled REQUIRED for GMail
+		$sendmail->SMTPSecure = 'tls'; // secure transfer enabled REQUIRED for GMail
 		$sendmail->Host = $host;
 		$sendmail->Port = $port; 
 		$sendmail->Username = $username;  
@@ -42,6 +43,7 @@
 		$sendmail->SetFrom($my_email, "");
 		$sendmail->Subject = "Ricevuta Ordine AGESCI";
 		$sendmail->Body = $mailBody;
+		$sendmail->addCustomHeader("Content-Type: text/html; charset=ISO-8859-1\r\n");
 		$to      = $mail;
 		$sendmail->AddAddress($to);
 		if(!$sendmail->Send())
@@ -54,7 +56,7 @@
 		$headers .= "X-Priority: 1\n"; // Urgent message!
 		$headers .= "Return-Path: ".$my_email."\n"; // Return path for errors
 		$headers .= "MIME-Version: 1.0\r\n";
-		$headers .= "Content-Type: text/html; charset=iso-8859-1\n";
+		$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 		mail($mail, "Ricevuta Ordine #".$idOrdine, $mailBody, $headers);
 	}
 ?>
@@ -118,7 +120,7 @@
 	  </div>
 	  <div class="modal-body">
 		<?php if($pagamento == "A mano" || $pagamento == "undefined"){?>
-			<h4> Per saldare (e quindi confermare) l'ordine, stampa la ricevuta mostrata sotto questa finestra. Puoi saldare l'ordine direttamente ad un capo a fine riunione. <br/> <br/>Ti è stata inviata una mail a <?php echo $mail;?> con il riepilogo dell'ordine e questa ricevuta.</h4>
+			<h4> Per confermare l'ordine è necessario il pagamento. <br/> Puoi saldare la quota portando i soldi e una copia di questa pagina direttamente ad un capo a fine riunione (o in alternativa, se non si riesce a stampare la pagina, basterà il numero dell'ordine e l'importo). <br/> <br/>Ti è stata inviata una mail a <?php echo $mail;?> con un link per ritrovare questa pagina.</h4>
 		<?php } else if($pagamento == "Bonifico Bancario"){?>
 			<h4> Sotto questa finestra trovi al ricevuta, puoi salvarla e conservarla (in qualsiasi caso ti è stata inviata una mail per recuperarla se dovessi averne bisogno). 
 			<br/> <br/>

@@ -21,6 +21,7 @@
 				<th>Totale</th>
 				<th>Pagamento</th>
 				<th></th>
+				<th>Dettagli</td>
 			  </tr>
 			</thead>
 			<tbody>
@@ -43,6 +44,9 @@
 					<div class="checkbox" style="position:relative; top:-10px;">
 						<?php echo '<input type="checkbox" name="id-'.$row["id"].'" value="'.$row["id"].'">';?>
 					</div>
+				</td>
+				<td>
+					
 				</td>
 			  </tr>
 	<?
