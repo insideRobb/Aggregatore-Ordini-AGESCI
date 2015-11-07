@@ -70,7 +70,7 @@
 	<?
 	}
 	?>
-			<input type="submit" value="IMPOSTA SELEZIONATI COME SALDATI"/>
+			<input type="submit" value="IMPOSTA SELEZIONATI COME PAGATI"/>
 				</form>
 			</tbody>
 		  </table>
