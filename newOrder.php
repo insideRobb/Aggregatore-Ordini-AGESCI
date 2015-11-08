@@ -60,7 +60,7 @@ function item_selected(item){
 
 	//Mostro il prezzo
 	var prezzo = db[item.value].prezzo
-	$("#"+row_id).find("#td_prezzo").text(prezzo);
+	$("#"+row_id).find("#td_prezzo").text(prezzo.toFixed(2));
 
 	//Costruisco la lista di scelta quantita'
 	var quantity = $("#"+row_id).find("#td_quantity");
@@ -139,12 +139,12 @@ function prepareDataForm(){
 	  <table class="table">
 		<thead>
 		  <tr>
-			<th>Articolo</th>
-			<th>Descrizione</th>
-			<th>Taglie Disponibili</th>
-			<th>Prezzo (€, caduno)</th>
-			<th>Quantità</th>
-			<th></th>
+			<th class="col-sm-3">Articolo</th>
+			<th class="col-sm-3">Descrizione</th>
+			<th class="col-sm-1">Taglia</th>
+			<th class="col-sm-1">Prezzo (€)</th>
+			<th class="col-sm-1">Quantità</th>
+			<th class="col-sm-2"></th>
 		  </tr>
 		</thead>
 		<tbody>

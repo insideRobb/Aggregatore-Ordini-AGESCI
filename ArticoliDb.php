@@ -67,7 +67,7 @@
 		}
 		
 		function getItem(){
-			return $this->query("SELECT * FROM articoli");
+			return $this->query("SELECT * FROM articoli ORDER BY nome");
 		}
 		
 		function getPrice($item){
