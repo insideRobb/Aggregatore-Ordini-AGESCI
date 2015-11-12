@@ -1,10 +1,10 @@
 <?php
 	class ArticoliDb extends SQLite3{
 		function __construct($dir){
-			$this -> open($dir."/database.db", SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE, "password");
+			$this -> open($dir."/admin/database.db", SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE, "passwordCaso");
 			$this -> exec("CREATE TABLE IF NOT EXISTS articoli (nome TEXT PRIMARY KEY UNIQUE, descrizione REAL, taglie TEXT, prezzo INT)");
-			$this -> exec("CREATE TABLE IF NOT EXISTS ordini (id INTEGER PRIMARY KEY UNIQUE, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)");
-			$this -> exec("CREATE TABLE IF NOT EXISTS oggettiordinati (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT)");
+			$this -> exec("CREATE TABLE IF NOT EXISTS ordini (id INTEGER PRIMARY KEY AUTOINCREMENT, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)");
+			$this -> exec("CREATE TABLE IF NOT EXISTS oggettiordinati (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT, FOREIGN KEY(id_ordine) REFERENCES ordine(id), FOREIGN KEY(oggetto) REFERENCES articoli(nome))");
 		}
 
 		function convertArrayToString($array){

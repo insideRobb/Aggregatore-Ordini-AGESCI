@@ -1,29 +1,24 @@
 <?php
-	require("menu.php");
+		require("menu.php");
+		$db = new ArticoliDb(".");
+		$idOrdine = $_GET["id"];
+		$mail = $_GET["mail"];
+		$result = $db -> getOrderData($idOrdine);
+		$row = $result -> fetchArray();
+		$name = $row["nome"];
+		$phone = $row["telefono"];
+		$pagamento = $row["pagamento"];
+		$saldato = ($row["saldato"]==1) ? "SI":"NO";
+		$consegnato = ($row["consegnato"]==1) ? "SI":"NO";
+		$branca = $row["branca"];
+		$totale = $row["totale"];
+		$items = $db->getOrderItem($idOrdine);
 
 	require("mail_config.php");
 	
-	session_start();
 	if($useSMTP)
 		require("PHPMailer/PHPMailerAutoload.php");
-	$db = new ArticoliDb(".");
-	
 
-	$items = json_decode(urldecode($_POST["items"]), true);
-	$totale = $_POST["totale"];
-	if (isset($_POST['name']))  
-		$name = $_POST["name"]; else $name = "undefined";
-	if (isset($_POST['mail']))  
-		$mail = $_POST["mail"]; else $mail = "undefined";
-	if (isset($_POST['phone']))  
-		$phone = $_POST["phone"]; else $phone = "undefined";
-	if (isset($_POST['pagamento']))   
-		$pagamento = $_POST['pagamento']; else $pagamento = "undefined";
-	if (isset($_POST['branca']))   
-		$branca = $_POST['branca']; else $branca = "undefined";
-	//var_dump($items);
-	
-	$idOrdine = $db -> addOrder($name, $mail, $phone, $items, $totale, $pagamento, $branca);
 	$mailBody = "<html><body>Il tuo ordine e' andato a buon fine<br/>";
 	$mailBody.= "Il totale dell'ordine (necessario per la conferma) e' di euro ".number_format((float)$totale, 2, ',', '');
 	$mailBody.= PHP_EOL."<br/>Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'."<br/><br/>".PHP_EOL.PHP_EOL;
@@ -102,12 +97,12 @@
 	</thead>
 	<tbody>
 	<?php
-		for($i=0; $i<count($items); $i++){
+		while($item = $items -> fetchArray()){
 			echo "<tr>";
-			echo "<td>".$items[$i]["item"]."</td>";
-			echo "<td>".$items[$i]["taglia"]."</td>";
-			echo "<td>".$items[$i]["quantity"]."</td>";
-			$prezzo = $db -> getPrice($items[$i]["item"]);
+			echo "<td>".$item["oggetto"]."</td>";
+			echo "<td>".$item["taglia"]."</td>";
+			echo "<td>".$item["quantity"]."</td>";
+			$prezzo = $db -> getPrice($item["oggetto"]);
 			echo "<td>€ ".number_format((float)$prezzo, 2, ',', '')."</td>";
 			echo "</tr>";
 		}

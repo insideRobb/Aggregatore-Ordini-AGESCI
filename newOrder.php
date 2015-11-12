@@ -166,7 +166,7 @@ function prepareDataForm(){
 		<h4 class="modal-title">Inserisci i dati per concludere il tuo ordine</h4>
 	  </div>
 	  <div class="modal-body">
-		<form role="form" action="saveOrder.php" method="POST">
+		<form role="form" action="getIdOrder.php" method="POST">
 		  <div class="form-group">
 			<label for="nome">Nome e Cognome:</label>
 			<input type="text" class="form-control" id="nome" name="name" required>

@@ -2,4 +2,5 @@ mail_config.php
 .htaccess
 htaccess
 admin/.htpasswd
+*.swp
 Archivio.zip

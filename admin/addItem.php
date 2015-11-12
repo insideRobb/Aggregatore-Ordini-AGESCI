@@ -21,7 +21,7 @@ $db = new ArticoliDb("..");
 <b>!!!ATTENTO: ESEGUI QUERY IN DB</b><br/>
 <b>articoli</b>(nome TEXT PRIMARY KEY UNIQUE, descrizione REAL, taglie TEXT, prezzo INT)<br/>
 <b>ordini</b> (id INTEGER PRIMARY KEY UNIQUE, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)<br/>
-<b>oggettiordinati</b> (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT)<br/>
+<b>oggettiordinati</b> (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT, FOREIGN KEY(id_ordine) REFERENCES ordine(id), FOREIGN KEY(oggetto) REFERENCES articoli(nome))<br/>
 <form action="" method="POST">
 	Query: <input type="text" name="item2"><br/>
 	<input type="submit" name="submit2" value="INVIA"/>
@@ -46,7 +46,7 @@ if(isset($_POST["submit2"])){
 			if($row[$i] == "")
 				echo "<td>-</td>";
 			else
-				echo "<td>".$row[$i]."</td>";
+				echo "<td>| ".$row[$i]." </td>";
 		}
 		echo "</tr>";
 	}
