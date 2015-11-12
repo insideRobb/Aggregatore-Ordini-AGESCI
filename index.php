@@ -1,7 +1,8 @@
 <?php 
+header("location: /ordini/newOrder.php");
 require("menu.php");
 ?>
-<body>
+<!-- <body>
 
 <ul class="nav nav-pills" style="padding-top:30px; padding-left:20px;">
   <li role="presentation" class="active"><a href="#">Home</a></li>
@@ -10,5 +11,5 @@ require("menu.php");
   <li role="presentation"><a href="admin/seeOrders.php">Amministrazione</a></li>
 </ul>
 </body>
-</html>
+</html> -->
 

@@ -17,6 +17,16 @@ $db = new ArticoliDb("..");
 	Nome: <input type="text" name="item1"><br/>
 	<input type="submit" name="submit1" value="RIMUOVI"/>
 </form>
+
+<b>!!!ATTENTO: ESEGUI QUERY IN DB</b><br/>
+<b>articoli</b>(nome TEXT PRIMARY KEY UNIQUE, descrizione REAL, taglie TEXT, prezzo INT)<br/>
+<b>ordini</b> (id INTEGER PRIMARY KEY UNIQUE, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)<br/>
+<b>oggettiordinati</b> (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT)<br/>
+<form action="" method="POST">
+	Query: <input type="text" name="item2"><br/>
+	<input type="submit" name="submit2" value="INVIA"/>
+</form>
+
 <?php
 if(isset($_POST["submit"])){
 	$taglie = explode(",", $_POST["taglie"]);
@@ -26,6 +36,21 @@ if(isset($_POST["submit"])){
 if(isset($_POST["submit1"])){
 	$db -> removeItem($_POST["item1"]);
 	echo $_POST["item1"]." rimosso correttamente";
+}
+if(isset($_POST["submit2"])){
+	$result = $db -> query($_POST["item2"]);
+	echo "<table>";
+	while($row = $result -> fetchArray()){
+		echo "<tr>";
+		for($i=0; $i < count($row)/2; $i++){
+			if($row[$i] == "")
+				echo "<td>-</td>";
+			else
+				echo "<td>".$row[$i]."</td>";
+		}
+		echo "</tr>";
+	}
+	echo "</table>";
 }
 
 

@@ -2,6 +2,8 @@
 	require("menu.php");
 
 	require("mail_config.php");
+	
+	session_start();
 	if($useSMTP)
 		require("PHPMailer/PHPMailerAutoload.php");
 	$db = new ArticoliDb(".");
@@ -29,7 +31,7 @@
 		$mailBody.= "Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non è possibile stampare la pagina, bastera' il numero dell'ordine e l'importo).";
 	else{
 		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN: ".$iban;
-		$mailBody.= '<br/>	Intestato a: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."<br/>";
+		$mailBody.= '<br/>	Intestato a:<p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."</p><br/>";
 		$mailBody.='Causale: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">Saldo Ordine Mercatino per Stella Alpina Num. '.$idOrdine.'</p> </h4>';
 	}
 	$mailBody .= "<br/> L'ordine sara' valido solo dopo il pagamento</body></html>";
