@@ -1,5 +1,6 @@
 <?php
 	require("menu.php");
+
 	require("mail_config.php");
 	if($useSMTP)
 		require("PHPMailer/PHPMailerAutoload.php");
@@ -22,13 +23,16 @@
 	
 	$idOrdine = $db -> addOrder($name, $mail, $phone, $items, $totale, $pagamento, $branca);
 	$mailBody = "<html><body>Il tuo ordine e' andato a buon fine<br/>";
-	$mailBody.= "Il totale dell'ordine (da saldare in anticipo) e' di euro ".$totale;
+	$mailBody.= "Il totale dell'ordine (necessario per la conferma) e' di euro ".number_format((float)$totale, 2, ',', '');
 	$mailBody.= PHP_EOL."<br/>Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'."<br/><br/>".PHP_EOL.PHP_EOL;
 	if($pagamento == "A mano")
-		$mailBody.= "Per confermare l'ordine e' necessario il pagamento. Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non si riesce a stampare la pagina, bastera' il numero dell'ordine e l'importo).";
-	else
+		$mailBody.= "Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non è possibile stampare la pagina, bastera' il numero dell'ordine e l'importo).";
+	else{
 		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN: ".$iban;
-	$mailBody .= "<br/> L'ordine sarà valido solo dopo il pagamento</body></html>";
+		$mailBody.= '<br/>	Intestato a: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."<br/>";
+		$mailBody.='Causale: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">Saldo Ordine Mercatino per Stella Alpina Num. '.$idOrdine.'</p> </h4>';
+	}
+	$mailBody .= "<br/> L'ordine sara' valido solo dopo il pagamento</body></html>";
 	if($useSMTP){
 		$sendmail = new PHPMailer();  // create a new object
 		$sendmail->IsSMTP(); // enable SMTP
@@ -66,6 +70,14 @@
 		$('#orderModal').modal('show');
 	});
 </script>
+	<style type="text/css">
+	  .for-print {display: none;}
+	  
+	  @media print {
+	  	.for-print {display: block;}
+	  	#footer { position: relative; bottom: 0; }
+	  }
+	</style> 
 </head>
 <body>
 <div class="container">
@@ -106,7 +118,15 @@
 	</tr>
 	</tbody>
   </table>
+  <div id="footer" class="for-print">
+  _________________RICEVUTA PER CAPO_________________
+  	<h2>Ricevuta Ordine Uniformi #<?php echo $idOrdine; ?></h2>
+  	<h4><?php echo "Nome: <b>".$name."</b> - eMail: <b>".$mail."</b> <br/> Telefono: <b>".$phone."</b> - Branca: <b>".$branca." </b> <br/> <br/>  Modalità Pagamento: <b>".$pagamento; ?></b></h4>
+  	<h5>PAGATO: ___ - CONSEGNATO: ___ </h5><br/>
+  </div>
+  
 </div>
+
 
 <!-- Modal -->
 <div id="orderModal" class="modal fade" role="dialog">
@@ -121,10 +141,11 @@
 	  <div class="modal-body">
 		<?php if($pagamento == "A mano" || $pagamento == "undefined"){?>
 			<h4> Per confermare l'ordine è necessario il pagamento. <br/> Puoi saldare la quota portando i soldi e una copia di questa pagina direttamente ad un capo a fine riunione (o in alternativa, se non si riesce a stampare la pagina, basterà il numero dell'ordine e l'importo). <br/> <br/>Ti è stata inviata una mail a <?php echo $mail;?> con un link per ritrovare questa pagina.</h4>
-		<?php } else if($pagamento == "Bonifico Bancario"){?>
+		<?php } else {?>
 			<h4> Sotto questa finestra trovi al ricevuta, puoi salvarla e conservarla (in qualsiasi caso ti è stata inviata una mail per recuperarla se dovessi averne bisogno). 
 			<br/> <br/>
-			Per il pagamento, necessario per confermare l'ordine, puoi effettuare il bonifico a <?php echo $IBAN; ?> </h4>
+			Per il pagamento, necessario per confermare l'ordine, puoi effettuare il bonifico a <?php echo $iban; ?> <br/>	<br/>	Intestato a: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;"> <?php echo $propIban; ?></p>
+			 Causale: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">Saldo Ordine Mercatino per Stella Alpina Num. <?php echo $idOrdine; ?></p> </h4>
 		<?php } ?>
 			
 	  </div>

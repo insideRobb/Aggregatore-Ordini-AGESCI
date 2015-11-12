@@ -163,30 +163,30 @@ function prepareDataForm(){
 	<div class="modal-content">
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h4 class="modal-title">Inserisci i dati per concludere l'ordine</h4>
+		<h4 class="modal-title">Inserisci i dati per concludere il tuo ordine</h4>
 	  </div>
 	  <div class="modal-body">
 		<form role="form" action="saveOrder.php" method="POST">
 		  <div class="form-group">
 			<label for="nome">Nome e Cognome:</label>
-			<input type="text" class="form-control" id="nome" name="name">
+			<input type="text" class="form-control" id="nome" name="name" required>
 		  </div>
 		  <div class="form-group">
 			<label for="email">eMail:</label>
-			<input type="email" class="form-control" id="email" name="mail">
+			<input type="email" class="form-control" id="email" name="mail" required>
 		  </div>
 		  <div class="form-group">
 		  	<label for="phone">Telefono:</label>
-		  	<input type="phone" class="form-control" id="phone" name="phone">
+		  	<input type="phone" class="form-control" id="phone" name="phone" required>
 		  </div>
 		  <div class="form-group">
 		   	<label for="pagamento">Modalità di Pagamento :</label>
-		   	<label class="radio-inline"><input type="radio" name="pagamento" value="A mano">A mano a riunione</label>
+		   	<label class="radio-inline"><input type="radio" name="pagamento" value="A mano" required checked>A mano a riunione</label>
 		   	<label class="radio-inline"><input type="radio" name="pagamento" value="Bonifico">Bonifico Bancario</label>
 		  </div>
 		  <div class="form-group">
 		    	<label for="branca">Branca:</label>
-		    	<label class="radio-inline"><input type="radio" name="branca" value="LC">LC (Coccinelle)</label>
+		    	<label class="radio-inline"><input type="radio" name="branca" value="LC" required>LC (Coccinelle)</label>
 		    	<label class="radio-inline"><input type="radio" name="branca" value="EG">EG (Reparto)</label>
 		    	<label class="radio-inline"><input type="radio" name="branca" value="RS">RS (Clan)</label>
 		   </div>
@@ -194,6 +194,22 @@ function prepareDataForm(){
 		<input type="hidden" name="totale" id="totaleOrdine" value="">
 
 		  <button id="saveOrder" type="submit" class="btn btn-success">Invia</button>
+		  <script>
+		  	var forms = document.getElementsByTagName('form');
+		  	for (var i = 0; i < forms.length; i++) {
+		  		forms[i].noValidate = true;
+		  	
+		  		forms[i].addEventListener('submit', function(event) {
+		  			//Prevent submission if checkValidity on the form returns false.
+		  			if (!event.target.checkValidity()) {
+		  				event.preventDefault();
+		  				//Implement you own means of displaying error messages to the user here.
+		  				$("#myModal").find(".modal-title").append('<br/><h4 style="color:red"> Tutti i campi devono essere compilati</h4>');
+		  			}
+		  			return false;
+		  		}, false);
+		  	}
+		  </script>
 		</form>
 	  </div>
 	  <div class="modal-footer">
