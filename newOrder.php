@@ -163,7 +163,7 @@ function prepareDataForm(){
 	<div class="modal-content">
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h4 class="modal-title">Inserisci i dati per concludere il tuo ordine</h4>
+		<h4 class="modal-title">Inserisci i dati per concludere il tuo ordine (compila tutti i campi)</h4>
 	  </div>
 	  <div class="modal-body">
 		<form role="form" action="getIdOrder.php" method="POST">
@@ -194,22 +194,6 @@ function prepareDataForm(){
 		<input type="hidden" name="totale" id="totaleOrdine" value="">
 
 		  <button id="saveOrder" type="submit" class="btn btn-success">Invia</button>
-		  <script>
-		  	var forms = document.getElementsByTagName('form');
-		  	for (var i = 0; i < forms.length; i++) {
-		  		forms[i].noValidate = true;
-		  	
-		  		forms[i].addEventListener('submit', function(event) {
-		  			//Prevent submission if checkValidity on the form returns false.
-		  			if (!event.target.checkValidity()) {
-		  				event.preventDefault();
-		  				//Implement you own means of displaying error messages to the user here.
-		  				$("#myModal").find(".modal-title").append('<br/><h4 style="color:red"> Tutti i campi devono essere compilati</h4>');
-		  			}
-		  			return false;
-		  		}, false);
-		  	}
-		  </script>
 		</form>
 	  </div>
 	  <div class="modal-footer">
