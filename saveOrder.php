@@ -23,7 +23,7 @@
 	$mailBody.= "Il totale dell'ordine (necessario per la conferma) e' di euro ".number_format((float)$totale, 2, ',', '');
 	$mailBody.= PHP_EOL."<br/>Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'."<br/><br/>".PHP_EOL.PHP_EOL;
 	if($pagamento == "A mano")
-		$mailBody.= "Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non è possibile stampare la pagina, bastera' il numero dell'ordine e l'importo).";
+		$mailBody.= "Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non e' possibile stampare la pagina, bastera' il numero dell'ordine e l'importo).";
 	else{
 		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN: ".$iban;
 		$mailBody.= '<br/>	Intestato a:<p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."</p><br/>";

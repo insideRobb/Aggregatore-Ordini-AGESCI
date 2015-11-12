@@ -16,7 +16,6 @@
 		$branca = $_POST['branca']; else $branca = "undefined";
 
 	$idOrdine = $db -> addOrder($name, $mail, $phone, $items, $totale, $pagamento, $branca);
-	$idOrdine = $db -> lastInsertRowID();
    	$url = "saveOrder.php?mail=" . $mail . "&id=" . $idOrdine;
    	header ("Location: $url");
    	exit(0);
