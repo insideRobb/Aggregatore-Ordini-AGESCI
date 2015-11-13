@@ -126,6 +126,11 @@ function prepareDataForm(){
 </script>
 </head>
 <body onload="print_row()">
+	<div style="
+	margin: auto;
+	width: 60%;
+	padding: 10px;">
+	<img src="ricevuta/header.jpg"/></div>
 <div class="container form-group">
 	
 	<!--<ul class="nav nav-pills">
