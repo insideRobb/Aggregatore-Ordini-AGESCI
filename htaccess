@@ -1,4 +1,0 @@
-AuthType Basic
-AuthName "restricted area"
-AuthUserFile /home/mhd/www.alessandro308.com/htdocs/ordiniagesci/admin/.htpasswd
-require valid-user
