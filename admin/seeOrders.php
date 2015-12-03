@@ -1,6 +1,7 @@
 <?php
 	//ordini (id INTEGER PRIMARY KEY UNIQUE, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)
 	require("../menu.php");
+	require("../mail_config.php");
 	$db = new ArticoliDb("..");
 	$orderedItems = $db -> getAllOrderItem();
 	$ordiniInSospeso = $db -> query("SELECT * FROM ordini WHERE saldato = 0 AND consegnato = 0 ORDER BY id");
@@ -105,7 +106,7 @@
 		  			<td><?php echo $row["email"]?></td>
 		  			<td><?php echo $row["branca"]?></td>
 		  			<td><?php echo $row["telefono"]?></td>
-		  			<td><?php echo $row["totale"]?></td>
+		  			<td><?php echo $row["totale"] + $costoGestioneOrdine?></td>
 		  			<td><?php echo $row["pagamento"]?></td>
 		  
 		  			<td>

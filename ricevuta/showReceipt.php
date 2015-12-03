@@ -53,6 +53,14 @@
 			echo "<td>€ ".number_format((float)($db->getPrice($item["oggetto"])), 2, ',', '')."</td>";
 			echo "</tr>";
 		}
+		if($costoGestioneOrdine != 0){
+			echo "<tr>";
+			echo "<td>Costo Gestione Ordine</td>";
+			echo "<td>-</td>";
+			echo "<td>-</td>";
+			echo "<td>€ ".number_format((float)$costoGestioneOrdine, 2, ',', '')."</td>";
+			echo "</tr>";
+		}
 	?>
 	<tr>
 		<td></td>
@@ -62,6 +70,12 @@
 	</tr>
 	</tbody>
   </table>
+  <div id="footer" class="for-print">
+  _________________RICEVUTA PER CAPO_________________
+  	<h2>Ricevuta Ordine Uniformi # <?php echo $id; ?></h2>
+  	<h4><?php echo "Nome: <b>".$name."</b> - eMail: <b>".$mail."</b> - Telefono: <b>".$phone."</b> - Branca: <b>".$branca."</b><br/><br/> Modalità Pagamento: <b>".$pagamento."</b> - Saldato: <b>".$saldato."</b> - Consegnato: <b>".$consegnato; ?></b></h4>
+<h5>Totale: <h4><?php echo "€ ".number_format((float)$row["totale"], 2, ',', '');?></h4></h5>
+  </div>
 	</div>
 	
 	</body>

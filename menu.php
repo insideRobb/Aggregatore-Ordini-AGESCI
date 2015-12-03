@@ -104,3 +104,11 @@
         }
     }
   </script>
+  <style type="text/css">
+    .for-print {display: none;}
+    
+    @media print {
+        .for-print {display: block;}
+        #footer { position: relative; bottom: 0; }
+    }
+  </style> 

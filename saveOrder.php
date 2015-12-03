@@ -1,5 +1,6 @@
 <?php
 		require("menu.php");
+		require("mail_config.php");
 		$db = new ArticoliDb(".");
 		$idOrdine = $_GET["id"];
 		$mail = $_GET["mail"];
@@ -11,7 +12,7 @@
 		$saldato = ($row["saldato"]==1) ? "SI":"NO";
 		$consegnato = ($row["consegnato"]==1) ? "SI":"NO";
 		$branca = $row["branca"];
-		$totale = $row["totale"];
+		$totale = $row["totale"] + $costoGestioneOrdine;
 		$items = $db->getOrderItem($idOrdine);
 
 	require("mail_config.php");
@@ -19,17 +20,25 @@
 	if($useSMTP)
 		require("PHPMailer/PHPMailerAutoload.php");
 
-	$mailBody = "<html><body>Il tuo ordine e' andato a buon fine<br/>";
-	$mailBody.= "Il totale dell'ordine (necessario per la conferma) e' di euro ".number_format((float)$totale, 2, ',', '');
-	$mailBody.= PHP_EOL."<br/>Per vedere la tua ricevuta vai pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')'."<br/><br/>".PHP_EOL.PHP_EOL;
-	if($pagamento == "A mano")
-		$mailBody.= "Puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non e' possibile stampare la pagina, bastera' il numero dell'ordine e l'importo).";
-	else{
-		$mailBody.= "Puoi effettuare il bonifico al seguente IBAN: ".$iban;
-		$mailBody.= '<br/>	Intestato a:<p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."</p><br/>";
-		$mailBody.='Causale: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">Saldo Ordine Mercatino per Stella Alpina Num. '.$idOrdine.'</p> </h4>';
-	}
-	$mailBody .= "<br/> L'ordine sara' valido solo dopo il pagamento</body></html>";
+	$mailBody = "Il tuo ordine &egrave; andato a buon fine<br/>";
+	$mailBodyPT = "Il tuo ordine e' andato a buon fine\n"; //plain-text version
+	$mailBody.= "<p>Il totale dell'ordine &egrave; di Euro ".number_format((float)$totale, 2, ',', '')."</p>";
+	$mailBodyPT .= "Il totale dell'ordine e' di Euro".number_format((float)$totale, 2, ',', '')."\n";
+	$mailBody.= "<p>Per vedere la tua ricevuta vai alla pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')</p>';
+	$mailBodyPT .= "Per vedere la tua ricevuta vai alla pagina (".$ricevutaDir.'/showReceipt.php?mail='.$mail.'&id='.$idOrdine.')\n';
+		$mailBody.= "<p>Se hai scelto la modalit&agrave; di pagamento <b>a mano</b> puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non &egrave; possibile stampare la pagina, baster&agrave; il numero dell'ordine e l'importo).</p><br/>";
+		$mailBodyPT .= "Se hai scelto la modalita' di pagamento a mano puoi saldare la quota portando i soldi e una copia della ricevuta direttamente ad un capo a fine riunione (o in alternativa, se non e' possibile stampare la pagina, bastera' il numero dell'ordine e e l'importo).";
+
+		$mailBody.= "Se hai scelto di pagare tramite <b>bonifico</b>, puoi effettuarlo al seguente IBAN: ".$iban;
+		$mailBodyPT .= "Se hai scelto di pagare tramite bonifico, puoi effettuarlo al seguente IBAN: ".$iban."\n";
+		$mailBody.= 'Intestato a:<p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">'.$propIban."</p>";
+		$mailBodyPT .= "Intestato a: ".$propIban."\n";
+		$mailBody.='Causale: <p style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">Saldo Ordine per Stella Alpina Num. '.$idOrdine.'</p> </h4>';
+		$mailBodyPT .= "Causale: Saldo Ordine per Stella Alpina Num. ".$idOrdine."\n";
+		
+	$mailBody .= "<br/> L'ordine sara' considerato valito solo dopo il pagamento";
+	$mailBodyPT .= "L'ordine sarà considerato valido solo dopo il pagamento";
+	
 	if($useSMTP){
 		$sendmail = new PHPMailer();  // create a new object
 		$sendmail->IsSMTP(); // enable SMTP
@@ -67,14 +76,6 @@
 		$('#orderModal').modal('show');
 	});
 </script>
-	<style type="text/css">
-	  .for-print {display: none;}
-	  
-	  @media print {
-	  	.for-print {display: block;}
-	  	#footer { position: relative; bottom: 0; }
-	  }
-	</style> 
 </head>
 <body>
 <div class="container">
@@ -106,6 +107,14 @@
 			echo "<td>€ ".number_format((float)$prezzo, 2, ',', '')."</td>";
 			echo "</tr>";
 		}
+		if($costoGestioneOrdine != 0){
+			echo "<tr>";
+			echo "<td>Costo Gestione Ordine</td>";
+			echo "<td>-</td>";
+			echo "<td>-</td>";
+			echo "<td>€ ".number_format((float)$costoGestioneOrdine, 2, ',', '')."</td>";
+			echo "</tr>";
+		}
 	?>
 	<tr>
 		<td></td>
@@ -120,6 +129,7 @@
   	<h2>Ricevuta Ordine Uniformi #<?php echo $idOrdine; ?></h2>
   	<h4><?php echo "Nome: <b>".$name."</b> - eMail: <b>".$mail."</b> <br/> Telefono: <b>".$phone."</b> - Branca: <b>".$branca." </b> <br/> <br/>  Modalità Pagamento: <b>".$pagamento; ?></b></h4>
   	<h5>PAGATO: ___ - CONSEGNATO: ___ </h5><br/>
+  	<h5>Totale: <h4><?php echo "€ ".number_format((float)$totale, 2, ',', '');?></h4></h5>
   </div>
   
 </div>
