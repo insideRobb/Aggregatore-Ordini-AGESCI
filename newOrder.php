@@ -57,7 +57,7 @@ function item_selected(item){
 		var option = $("<option></option>");
 		option.append(i);
 		select_taglie.append(option);
-	});
+	};
 	td_taglie.html(select_taglie);
 
 	//Mostro il prezzo
