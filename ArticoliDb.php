@@ -96,5 +96,13 @@
 		function getAllOrderItem(){
 			return $this -> query("SELECT * FROM oggettiordinati");
 		}
+		function getTagliePrezzi($nome){
+			$res = $this -> query("SELECT * FROM prezzitaglie WHERE nomeOggetto = '$nome'");
+			$taglie = array();
+			while($row = $res -> fetchArray()){
+				$taglie[$row["taglia"]]=$row["prezzo"];	
+			}
+			return $taglie;
+		}
 	}
 ?>
