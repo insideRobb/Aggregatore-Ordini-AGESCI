@@ -8,8 +8,8 @@
 	$item = $db -> getItem();
 	$rows = array();
 	while($row = $item -> fetchArray()){
-		$row["taglie"] = convertStringToArray($row["taglie"]);
 		$rows[$row["nome"]]=$row;
+		$rows[$row["nome"]]["taglie"] = $db -> getTagliePrezzi($row["nome"]);
 	}
 	echo "var db=".json_encode($rows).";";
 	echo "var costoGestione = ".$costoGestioneOrdine.";";
