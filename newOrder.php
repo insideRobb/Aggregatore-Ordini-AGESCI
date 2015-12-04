@@ -52,10 +52,10 @@ function item_selected(item){
 	var td_taglie = $("#"+row_id).find("#td_taglie");
 	var select_taglie = $("<select></select>");
 	select_taglie.addClass("form-control");
-	var taglie = db[elemento].taglie;
-	taglie.forEach(function(x){
+	var taglie = db[elemento][taglie];
+	$.each(taglie, function(i,elem){
 		var option = $("<option></option>");
-		option.append(x);
+		option.append(i);
 		select_taglie.append(option);
 	});
 	td_taglie.html(select_taglie);
