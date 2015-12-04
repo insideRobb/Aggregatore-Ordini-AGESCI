@@ -53,7 +53,7 @@ function item_selected(item){
 	var select_taglie = $("<select></select>");
 	select_taglie.addClass("form-control");
 	var taglie = db[elemento][taglie];
-	$.each(taglie, function(i,elem){
+	for(var i in taglie){
 		var option = $("<option></option>");
 		option.append(i);
 		select_taglie.append(option);
