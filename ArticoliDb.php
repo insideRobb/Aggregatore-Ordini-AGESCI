@@ -7,6 +7,7 @@
 			$this -> exec("CREATE TABLE IF NOT EXISTS articoli (nome TEXT PRIMARY KEY UNIQUE, descrizione REAL, taglie TEXT, prezzo INT)");
 			$this -> exec("CREATE TABLE IF NOT EXISTS ordini (id INTEGER PRIMARY KEY AUTOINCREMENT, data INT, nome TEXT, email TEXT, branca TEXT, telefono INT, totale REAL, pagamento TEXT, saldato INT, consegnato INT)");
 			$this -> exec("CREATE TABLE IF NOT EXISTS oggettiordinati (id_ordine INT, oggetto TEXT, taglia TEXT, quantity INT/*, FOREIGN KEY(id_ordine) REFERENCES ordini(id), FOREIGN KEY(oggetto) REFERENCES articoli(nome)*/)");
+			$this -> exec("CREATE TABLE IF NOT EXISTS prezzitaglie (nomeOggetto TEXT, taglia TEXT, prezzo REAL)");
 		}
 
 		function convertArrayToString($array){
@@ -73,8 +74,8 @@
 			return $this->query("SELECT * FROM articoli ORDER BY nome");
 		}
 		
-		function getPrice($item){
-			$result = $this->query("SELECT prezzo FROM articoli WHERE nome='$item'");
+		function getPrice($item, $taglia){
+			$result = $this->query("SELECT prezzo FROM tagliaprezzo WHERE nomeOggetto='$item' AND taglia='$taglia'");
 			$dato = $result -> fetchArray();
 			return $dato[0];
 		}

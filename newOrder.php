@@ -1,5 +1,6 @@
 <?php
 	require("menu.php");
+	require("mail_config.php");
 	$db = new ArticoliDb(".");
 ?>
 <script>
@@ -11,6 +12,7 @@
 		$rows[$row["nome"]]=$row;
 	}
 	echo "var db=".json_encode($rows).";";
+	echo "var costoGestione = ".$costoGestioneOrdine.";";
 ?>
 var row_count = 0;
 var total = 0;
@@ -87,8 +89,10 @@ function addItem(btnClicked) {
 	$("#"+row_id).find("#td_taglia").attr("disabled", "disabled");
 	$("#"+row_id).find("#td_quantity").attr("disabled", "disabled");
 	button.html('<button type="button" class="btn btn-danger" onclick="removeItem(this)">Rimuovi</button>');
+	if(total == 0)
+		total = costoGestione;
 	total += parseFloat($("#"+row_id).find("#td_prezzo").text())*parseFloat($("#"+row_id).find("#td_quantity option:selected").text());
-	$("#total").html("<h6> Totale: "+total.toFixed(2)+"€</h6>");
+	$("#total").html("<h6> Totale: "+total.toFixed(2)+"€* <br/> *compreso di spese di gestione ordine</h6>");
 	
 	//Aggiungo elemento a JSON Obj
 	var item = new Object();
@@ -112,7 +116,9 @@ function findAndRemove(array, property, value) {
 function removeItem(btnClicked){
 	var row_id = btnClicked.parentNode.parentNode.id;
 	total -= parseFloat($("#"+row_id).find("#td_prezzo").text()) * parseFloat($("#"+row_id).find("#td_quantity option:selected").text());
-	$("#total").html("<h6> Totale: €"+total.toFixed(2)+"</h6>");;
+	if(total == costoGestione)
+		total = 0;
+	$("#total").html("<h6> Totale: "+total.toFixed(2)+"€ <br/>*compreso di spese di gestione ordine</h6>");;
 	$("#"+row_id).remove();
 	//console.dir(row_id);
 	findAndRemove(order_items, "row_id", row_id);
