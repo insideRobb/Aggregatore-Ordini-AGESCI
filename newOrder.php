@@ -35,7 +35,7 @@ function print_row(){
 	}
 	tdnome.append(select_nome);
 	row.append(tdnome);
-	row.append('<td id="td_descr"></td><td id="td_taglie"></td><td id="td_prezzo"></td><td id="td_quantity"></td><td id="td_button"></td>');
+	row.append('<td id="td_descr"></td><td id="td_taglie" ></td><td id="td_prezzo"></td><td id="td_quantity"></td><td id="td_button"></td>');
 	$("tbody").append(row);
 }
 
@@ -52,16 +52,22 @@ function item_selected(item){
 	var td_taglie = $("#"+row_id).find("#td_taglie");
 	var select_taglie = $("<select></select>");
 	select_taglie.addClass("form-control");
-	var taglie = db[elemento][taglie];
+	var taglie = db[elemento].taglie;
 	for(var i in taglie){
 		var option = $("<option></option>");
 		option.append(i);
 		select_taglie.append(option);
 	};
+	select_taglie.on("change", function () {
+		taglia_selezionata = select_taglie.find(":selected").text();
+		var prezzo = taglie[taglia_selezionata];
+		$("#"+row_id).find("#td_prezzo").text(prezzo.toFixed(2));
+	});
 	td_taglie.html(select_taglie);
 
 	//Mostro il prezzo
-	var prezzo = db[item.value].prezzo
+	taglia_selezionata = select_taglie.children().first().text();
+	var prezzo = taglie[taglia_selezionata];
 	$("#"+row_id).find("#td_prezzo").text(prezzo.toFixed(2));
 
 	//Costruisco la lista di scelta quantita'

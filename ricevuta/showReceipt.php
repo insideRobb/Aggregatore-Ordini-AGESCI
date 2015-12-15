@@ -50,7 +50,7 @@
 			echo "<td>".$item["taglia"]."</td>";
 			echo "<td>".$item["quantity"]."</td>";
 			$prezzo = $db -> getPrice($item["oggetto"], $item["taglia"]);
-			echo "<td>€ ".number_format((float)($db->getPrice($item["oggetto"])), 2, ',', '')."</td>";
+			echo "<td>€ ".number_format((float)$prezzo, 2, ',', '')."</td>";
 			echo "</tr>";
 		}
 		if($costoGestioneOrdine != 0){

@@ -28,6 +28,7 @@
 		
 		function addOrder($nome, $email, $telefono, $oggetti, $totale, $pagamento, $branca){
 			$now = date("d.m.y");
+			global $quotaGestioneOrdine;
 			$totale = $totale + $quotaGestioneOrdine;
 			$this -> exec("INSERT INTO ordini (data, nome, email, branca, telefono, totale, pagamento, saldato, consegnato) VALUES ('$now', '$nome', '$email', '$branca', '$telefono', '$totale', '$pagamento', 0, 0)");
 			$idOrdine = $this -> lastInsertRowID();
@@ -76,7 +77,7 @@
 		}
 		
 		function getPrice($item, $taglia){
-			$result = $this->query("SELECT prezzo FROM tagliaprezzo WHERE nomeOggetto='$item' AND taglia='$taglia'");
+			$result = $this->query("SELECT prezzo FROM prezzitaglie WHERE nomeOggetto='$item' AND taglia='$taglia'");
 			$dato = $result -> fetchArray();
 			return $dato[0];
 		}
