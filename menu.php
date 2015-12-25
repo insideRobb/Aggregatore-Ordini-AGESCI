@@ -18,16 +18,17 @@
   }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <title>Gestione Ordini Uniformi</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="bootstrap-select/js/bootstrap-select.js"></script>
-  <link rel="stylesheet" href="bootstrap-select/css/bootstrap-select.css">
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="risorse/bootstrap-select/js/bootstrap-select.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="risorse/bootstrap-select/css/bootstrap-select.css">
+  <link rel="stylesheet" href="risorse/style.css">
   <script>
     function stripcslashes (str) {
         // http://kevin.vanzonneveld.net
@@ -104,11 +105,3 @@
         }
     }
   </script>
-  <style type="text/css">
-    .for-print {display: none;}
-    
-    @media print {
-        .for-print {display: block;}
-        #footer { position: relative; bottom: 0; }
-    }
-  </style> 
